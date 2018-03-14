@@ -9,16 +9,14 @@ trait PackageEnv extends RunningEnv{
     private def initialize = {
         
         if (! _packageInited){
-            _packageInited = true
             init
+            _packageInited = true
         }
     }
     
     
     def run = {
         initialize
-        
-        
     }
     
 }

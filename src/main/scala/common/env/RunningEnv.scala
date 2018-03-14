@@ -8,6 +8,7 @@ import scala.concurrent.duration._
 trait RunningEnv extends ConfigEnv{
     implicit val timeout = Timeout(3.seconds)
     implicit val actorSystem = AkkaSystem.actorSystem
-    implicit val cassandraCluster = Cassandra.cassandraCluster
+    implicit val cassandraSession = Cassandra.cassandraSession
+    implicit val cassandraSessionAsync = Cassandra.cassandraSessionAsync
 
 }
