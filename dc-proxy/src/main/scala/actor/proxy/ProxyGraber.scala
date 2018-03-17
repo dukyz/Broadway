@@ -1,7 +1,7 @@
 package actor.proxy
 
 import akka.actor.{Actor, Timers}
-import common.util.ActorUtil
+import common.tool.ActorUtil
 
 import scala.concurrent.duration._
 
@@ -21,13 +21,9 @@ class ProxyGraber extends Actor with ActorUtil with Timers {
     
     def grabNewProxy = {
         withUrl(classConfig.getString("url")){
-            buff => buff.getLines().foreach(save)
+            buff => buff.getLines().foreach( url =>
+                actorRegistration.findStuff[ProxySaver].get ! ProxySaver.SaveNew(url)
+            )
         }
     }
-    
-    def save(url:String) = {
-        cassandraSession.execute("insert into ")
-        
-    }
-    
 }

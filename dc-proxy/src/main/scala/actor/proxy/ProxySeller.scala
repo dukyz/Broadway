@@ -1,7 +1,7 @@
 package actor.proxy
 
 import akka.actor.Actor
-import common.util.ActorUtil
+import common.tool.ActorUtil
 
 object ProxySeller   {
     case object Increment

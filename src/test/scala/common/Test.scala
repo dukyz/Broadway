@@ -1,11 +1,7 @@
 package common
 import scala.language.dynamics
 
-class Test extends CassandraObject with Dynamic {
+class Test {
     
-    def selectDynamic(name: String) = name
-    
-    override def insert: Unit = {
-    
-    }
+
 }

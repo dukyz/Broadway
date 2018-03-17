@@ -1,4 +1,4 @@
-package common.util
+package common.tool
 
 import akka.actor.{Actor, ActorLogging, ActorRef, PoisonPill, Props}
 import akka.cluster.sharding.{ClusterSharding, ClusterShardingSettings}
@@ -12,7 +12,7 @@ import scala.reflect.ClassTag
   * This trait should be used with Actor only
   * @author dukyz
   */
-trait ActorUtil extends EasyUtil with RunningEnv with ActorLogging{
+trait ActorUtil extends RunningEnv with EasyFunc with ActorLogging{
     this:Actor =>
     
     /**

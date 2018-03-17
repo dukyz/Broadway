@@ -1,4 +1,4 @@
-package common.util
+package common.tool
 
 import akka.event.LoggingAdapter
 
@@ -10,7 +10,7 @@ import scala.reflect.ClassTag
   * This trait provides some funtion for your convenience
   * @author dukyz
   */
-trait EasyUtil  {
+trait EasyFunc  {
     
     /**
       * generate a simple name(lower camel case) for variant from Class name(Upper camel case).

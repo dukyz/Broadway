@@ -1,7 +1,9 @@
 package actor
 
-import akka.actor.Props
+import akka.actor.{ActorRef, Props}
 import common.env.PackageEnv
+
+import scala.collection.mutable
 
 package object proxy extends PackageEnv{
     

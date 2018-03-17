@@ -14,7 +14,6 @@ trait PackageEnv extends RunningEnv{
         }
     }
     
-    
     def run = {
         initialize
     }

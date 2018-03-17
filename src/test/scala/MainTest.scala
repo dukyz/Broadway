@@ -1,10 +1,7 @@
-import dynamic.dataaccess.DAODynamic._
-
+import common.{CassandraObject, Test}
 
 
 object MainTest extends App  {
-    
-    val x = daoinstance as
-    
+
     
 }

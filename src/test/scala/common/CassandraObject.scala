@@ -1,5 +1,5 @@
 package common
 
 trait CassandraObject {
-    def insert
+    var base = share.base
 }
