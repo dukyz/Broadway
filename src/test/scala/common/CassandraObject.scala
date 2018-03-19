@@ -1,5 +1,5 @@
 package common
 
 trait CassandraObject {
-    var base = share.base
+//    var base = share.base
 }

@@ -3,6 +3,10 @@ package actor.proxy
 import akka.actor.{Actor, ActorRef}
 import common.tool.ActorUtil
 
+/**
+  * @todo to manage actors organized by proxy module
+  * @author dukyz
+  */
 class ProxyManager extends Actor with ActorUtil{
     
     var proxyGraber:ActorRef = null
@@ -12,16 +16,17 @@ class ProxyManager extends Actor with ActorUtil{
     var proxySaver:ActorRef = null
     
     override def preStart = {
-        proxyFlusher = generateSingletonActor[ProxyFlusher]
         proxyGraber = generateSingletonActor[ProxyGraber]
-        proxySeller = generateShardingActor[ProxySeller](classConfig.getInt("proxySellerCount"))
-        proxyChecker = generateShardingActor[ProxyChecker](classConfig.getInt("proxyCheckerCount"))
+//        proxyFlusher = generateSingletonActor[ProxyFlusher]
+//        proxySeller = generateShardingActor[ProxySeller](classConfig.getInt("proxySellerCount"))
+//        proxyChecker = generateShardingActor[ProxyChecker](classConfig.getInt("proxyCheckerCount"))
         proxySaver = generateShardingActor[ProxySaver](classConfig.getInt("proxySaverCount"))
-        
-        actorRegistration.registerStuff("proxyFlusher",proxyFlusher)
+    
+        actorRegistration.registerStuff("proxyManager",context.self)
+//        actorRegistration.registerStuff("proxyFlusher",proxyFlusher)
         actorRegistration.registerStuff("proxyGraber",proxyGraber)
-        actorRegistration.registerStuff("proxySeller",proxySeller)
-        actorRegistration.registerStuff("proxyChecker",proxyChecker)
+//        actorRegistration.registerStuff("proxySeller",proxySeller)
+//        actorRegistration.registerStuff("proxyChecker",proxyChecker)
         actorRegistration.registerStuff("proxySaver",proxySaver)
     }
     

@@ -9,7 +9,7 @@ import common.setting.ShardingDefault
 import scala.reflect.ClassTag
 
 /**
-  * This trait should be used with Actor only
+  * @todo This trait should be used with Actor only
   * @author dukyz
   */
 trait ActorUtil extends RunningEnv with EasyFunc with ActorLogging{

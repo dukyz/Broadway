@@ -1,30 +1,19 @@
 package actor.proxy
 
+import actor.proxy.ProxySeller.Get
 import akka.actor.Actor
 import common.tool.ActorUtil
+import scala.collection.JavaConversions.collectionAsScalaIterable
 
 object ProxySeller   {
-    case object Increment
-    case object Decrement
+    case class Get(n:Int)
 }
 
 class ProxySeller extends Actor with ActorUtil{
-    import ProxySeller._
-    var count = 0
     
     override def receive = {
-        case Increment => {
-            count += 1
-            println(s"count is $count")
-//            (ClusterSharding(system).shardRegion("ProxySeller") ? ShardRegion.GetClusterShardingStats).onSuccess({
-//                case x => println(x)
-//            })
-        }
-        case Decrement => {
-            count -= 1
-            println(s"count is $count")
-            
-            
-        }
+        case Get(n) => cassandraSession.execute(s"select proxy from proxy.pool where limit $n")
+            .all.map(row => row.getString("proxy"))
+        case _ =>
     }
 }
