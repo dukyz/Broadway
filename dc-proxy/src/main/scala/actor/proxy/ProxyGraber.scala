@@ -15,7 +15,12 @@ object ProxyGraber {
     /**
       * Trigger object to grab new url action
       */
-    case object GRAB
+    case object Grab
+    
+    /**
+      * find max order_id
+      */
+    case object FindMaxOrder
 }
 
 class ProxyGraber extends Timers with PersistentActor with ActorUtil  {
@@ -40,17 +45,18 @@ class ProxyGraber extends Timers with PersistentActor with ActorUtil  {
     private var order_id:Int = 0
     
     override def preStart = {
-        timers.startPeriodicTimer(TIMER_OF_PROXYGRABER,GRAB,classConfig.getInt("timerPeriodic") seconds)
+        timers.startPeriodicTimer(TIMER_OF_PROXYGRABER,Grab,classConfig.getInt("timerPeriodic") seconds)
     }
     
     override def receiveRecover: Receive = {
-        case RecoveryCompleted => log.info("recovered order_id is :"+order_id)
+        case RecoveryCompleted =>
         case SnapshotOffer(_,snapshot:Int) => this.order_id = snapshot
         case o_id:Int => this.order_id = o_id
     }
     
     override def receiveCommand = {
-        case GRAB => grabNewProxy
+        case Grab => grabNewProxy
+        case FindMaxOrder => sender ! order_id
         case _ =>
     }
     
@@ -63,7 +69,7 @@ class ProxyGraber extends Timers with PersistentActor with ActorUtil  {
                 persist(event = this.order_id)( persisted_order_id => {
                     //send proxy extracted to the saver actor
                     actorRegistration.findStuff[ProxySaver].get !
-                        ShardingDefault.EntityEnvelope(persisted_order_id.toString,ProxySaver.SaveNew(persisted_order_id,proxy))
+                        ShardingDefault.EntityEnvelope(persisted_order_id.toString,ProxySaver.saveNewIntoArchive(persisted_order_id,proxy))
                     //clean the persisted history when reach the snapshotInterval.
                     if (persisted_order_id % snapshotInterval == 0) {
                         saveSnapshot(snapshot = persisted_order_id)

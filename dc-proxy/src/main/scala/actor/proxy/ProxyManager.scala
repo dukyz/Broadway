@@ -17,16 +17,16 @@ class ProxyManager extends Actor with ActorUtil{
     
     override def preStart = {
         proxyGraber = generateSingletonActor[ProxyGraber]
-//        proxyFlusher = generateSingletonActor[ProxyFlusher]
-//        proxySeller = generateShardingActor[ProxySeller](classConfig.getInt("proxySellerCount"))
-//        proxyChecker = generateShardingActor[ProxyChecker](classConfig.getInt("proxyCheckerCount"))
+        proxyFlusher = generateSingletonActor[ProxyFlusher]
+        proxySeller = generateSingletonActor[ProxySeller]
+        proxyChecker = generateShardingActor[ProxyChecker](classConfig.getInt("proxyCheckerCount"))
         proxySaver = generateShardingActor[ProxySaver](classConfig.getInt("proxySaverCount"))
     
         actorRegistration.registerStuff("proxyManager",context.self)
-//        actorRegistration.registerStuff("proxyFlusher",proxyFlusher)
+        actorRegistration.registerStuff("proxyFlusher",proxyFlusher)
         actorRegistration.registerStuff("proxyGraber",proxyGraber)
-//        actorRegistration.registerStuff("proxySeller",proxySeller)
-//        actorRegistration.registerStuff("proxyChecker",proxyChecker)
+        actorRegistration.registerStuff("proxySeller",proxySeller)
+        actorRegistration.registerStuff("proxyChecker",proxyChecker)
         actorRegistration.registerStuff("proxySaver",proxySaver)
     }
     

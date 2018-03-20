@@ -3,6 +3,7 @@ package common.tool
 import akka.actor.{Actor, ActorLogging, ActorRef, PoisonPill, Props}
 import akka.cluster.sharding.{ClusterSharding, ClusterShardingSettings}
 import akka.cluster.singleton.{ClusterSingletonManager, ClusterSingletonManagerSettings, ClusterSingletonProxy, ClusterSingletonProxySettings}
+import akka.pattern.AskSupport
 import common.env.RunningEnv
 import common.setting.ShardingDefault
 
@@ -12,7 +13,7 @@ import scala.reflect.ClassTag
   * @todo This trait should be used with Actor only
   * @author dukyz
   */
-trait ActorUtil extends RunningEnv with EasyFunc with ActorLogging{
+trait ActorUtil extends RunningEnv with EasyFunc with ActorLogging with AskSupport{
     this:Actor =>
     
     /**

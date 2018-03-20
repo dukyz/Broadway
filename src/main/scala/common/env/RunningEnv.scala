@@ -9,6 +9,7 @@ trait RunningEnv extends ConfigEnv {
     
     implicit val timeout = Timeout(3.seconds)
     implicit val actorSystem = AkkaSystem.actorSystem
+    implicit val executionContext = actorSystem.dispatcher
     implicit val cassandraSession = Cassandra.cassandraSession
     implicit val cassandraSessionAsync = Cassandra.cassandraSessionAsync
     
