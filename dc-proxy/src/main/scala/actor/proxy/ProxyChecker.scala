@@ -1,15 +1,19 @@
 package actor.proxy
 
-import actor.proxy.ProxyChecker.Check
 import akka.actor.Actor
+import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import common.setting.ShardingDefault
 import common.tool.ActorUtil
 
+import scala.util.Try
+
 object ProxyChecker {
     case class Check(ts:Long,order_id:Int,proxy:String)
+    val checkUri = classConfig.getString("checkUri")
 }
 
 class ProxyChecker extends Actor with ActorUtil {
+    import ProxyChecker._
     
     override def receive = {
         case Check(ts,order_id,proxy) => check(ts,order_id,proxy)
@@ -17,15 +21,32 @@ class ProxyChecker extends Actor with ActorUtil {
     }
     
     def check(ts:Long,order_id:Int,proxy:String) = {
-        var passed = false
-        //测试代理有效性代码
-        passed = true
         
-        if (passed)
-            actorRegistration.findStuff[ProxySaver].get !
-                ShardingDefault.EntityEnvelope(
-                    ts.toString,
-                    ProxySaver.saveCheckedIntoPool(ts,order_id,proxy)
-                )
+        val proxyHost = proxy.split(":")(0)
+        val proxyPort = proxy.split(":")(1).toInt
+        
+        networkUtil.checkProxy(proxyHost,proxyPort,checkUri).foreach({
+            case resp @ HttpResponse(StatusCodes.OK, _, _, _) => {
+                resp.discardEntityBytes()
+                actorRegistration.findStuff[ProxySaver].get !
+                    ShardingDefault.EntityEnvelope(
+                        ts.toString,
+                        ProxySaver.saveCheckedIntoPool(ts,order_id,proxy)
+                    )
+            }
+            case _ =>
+        })
+    
+//        networkUtil.checkProxy(proxyHost,proxyPort,checkUri).foreach(
+//            resp => {
+//                resp.discardEntityBytes()
+//                actorRegistration.findStuff[ProxySaver].get !
+//                    ShardingDefault.EntityEnvelope(
+//                        ts.toString,
+//                        ProxySaver.saveCheckedIntoPool(ts,order_id,proxy)
+//                    )
+//            }
+//
+//        )
     }
 }
