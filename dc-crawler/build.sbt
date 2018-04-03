@@ -1,4 +1,4 @@
-name := "dc-downloader"
+name := "dc-crawler"
 
 version := "0.1"
 

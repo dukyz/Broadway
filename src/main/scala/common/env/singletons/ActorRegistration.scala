@@ -12,6 +12,7 @@ private[env] object ActorRegistration extends EasyFunc {
 
     def registerStuff(name:String,stuff:ActorRef) = {
         registeredActors.put(name,stuff)
+        this
     }
 
     def findStuff[T:ClassTag] = {

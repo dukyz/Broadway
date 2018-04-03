@@ -8,8 +8,6 @@ lazy val env = (project in file("."))
 
 lazy val proxy = (project in file("dc-proxy")).dependsOn(env)
 
-lazy val downloader = (project in file("dc-downloader")).dependsOn(env)
-
-lazy val extractor = (project in file("dc-extractor")).dependsOn(env)
+lazy val crawler = (project in file("dc-crawler")).dependsOn(env)
 
 libraryDependencies ++= Dependencies.libDependencies
