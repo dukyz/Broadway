@@ -1,5 +1,5 @@
 import actor.crawler
 
-object Main {
+object Main extends App {
     crawler.run
 }

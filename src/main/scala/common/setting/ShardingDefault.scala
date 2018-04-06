@@ -1,19 +1,20 @@
 package common.setting
 
 import akka.cluster.sharding.ShardRegion
+import common.tool.{EasyFunc, Empty}
 
 object ShardingDefault {
     
-    final case class EntityEnvelope(entityId: String, msg: Any)
+    final case class EntityEnvelope(entityId: String , msg: Any = null)
     def apply(numberOfShards: Int = 1): ShardingDefault = new ShardingDefault(numberOfShards)
     
 }
 
-class ShardingDefault(numberOfShards:Int=1) {
+class ShardingDefault (numberOfShards:Int=1) extends Empty with EasyFunc  {
     import ShardingDefault._
     
     val extractEntityId:ShardRegion.ExtractEntityId = {
-        case EntityEnvelope(entityId, msg) => (entityId, msg)
+        case EntityEnvelope(entityId, msg) => (entityId, nvl(msg,entityId) )
     }
     
     val extractShardId:ShardRegion.ExtractShardId = {

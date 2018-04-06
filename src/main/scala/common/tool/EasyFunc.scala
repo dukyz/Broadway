@@ -14,12 +14,23 @@ trait EasyFunc  {
     
     /**
       * generate a simple name(lower camel case) for variant from Class name(Upper camel case).
-      * ClassName => className
+      * eg:ClassName => className
       * @tparam T any Class
       * @return variant name(lower camel case)
       */
     def simpleVariantName[T:ClassTag] = {
         val name = implicitly[ClassTag[T]].runtimeClass.getSimpleName
+        name.head.toLower + name.drop(1)
+    }
+    
+    /**
+      * generate a simple name(lower camel case) for variant from Class name(Upper camel case).
+      * eg:path.to.ClassName => className
+      * @param c any Class
+      * @return variant name(lower camel case)
+      */
+    def simpleVariantName(c:Class[_]) = {
+        val name = c.getSimpleName
         name.head.toLower + name.drop(1)
     }
     
@@ -44,4 +55,14 @@ trait EasyFunc  {
         }
     }
     
+    
+    /**
+      * find the first not null object
+      * @param list some object that we don't know which one is null
+      * @tparam T Class of param
+      * @return first not null object
+      */
+    def nvl[T](list:T*):T = {
+        list.find(x => x != null).get
+    }
 }
