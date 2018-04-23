@@ -5,6 +5,7 @@ import common.tool.ActorUtil
 
 /**
   * @todo to manage actors organized by proxy module
+  *
   * @author dukyz
   */
 class ProxyManager extends Actor with ActorUtil{

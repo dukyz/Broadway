@@ -27,11 +27,4 @@ private[env] object Cassandra {
     
     val cassandraSessionAsync = cassandraCluster.connectAsync()
     
-    
-    
-    
-        
-    
-    
- 
 }

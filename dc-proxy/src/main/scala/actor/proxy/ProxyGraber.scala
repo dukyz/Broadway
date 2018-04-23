@@ -8,7 +8,7 @@ import common.tool.ActorUtil
 import scala.concurrent.duration._
 
 /**
-  * @todo grab new proxy from the vendor
+  * @todo grab new proxy from the outsourcing
   * @author dukyz
   */
 object ProxyGraber {
@@ -51,7 +51,7 @@ class ProxyGraber extends Timers with PersistentActor with ActorUtil  {
     override def receiveRecover: Receive = {
         case RecoveryCompleted =>
         case SnapshotOffer(_,snapshot:Int) => this.order_id = snapshot
-        case o_id:Int => this.order_id = o_id
+        case o_id:Int => this.order_id = nvl(o_id,0)
     }
     
     override def receiveCommand = {

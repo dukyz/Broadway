@@ -1,45 +1,80 @@
 package actor.crawler.searchengine.baidu
 
-import actor.crawler.UrlCollector
-import akka.actor.{Actor, ActorRef}
+import java.net.URLEncoder
+import scala.concurrent.duration._
+import akka.actor.Actor
 import common.tool.ActorUtil
 import org.htmlcleaner.HtmlCleaner
 
 import scala.util.{Failure, Success}
 
+/**
+  * @todo Search engine for baidu.
+  *
+  * @author dukyz
+  */
+
 class Searcher extends Actor with ActorUtil{
     
-    val url_pattern = classConfig.getString("url_pattern")
-    val url_Xpath = classConfig.getString("url_Xpath")
-    val match_regexp_afterXpath = classConfig.getString("match_regexp_afterXpath").r
-    val drop_regexp_afterXpath = classConfig.getString("drop_regexp_afterXpath").r
-    var urlCollector:ActorRef = null
+    // search engine url
+    private val url_pattern = classConfig.getString("url_pattern")
+    // xpath which extract urls from the raw html
+    private val url_Xpath = classConfig.getString("url_Xpath")
+    // regexp that match urls which need to keep
+    private val match_regexp_afterXpath = classConfig.getString("match_regexp_afterXpath").r
+    // regexp that match urls which need to drop
+    private val drop_regexp_afterXpath = classConfig.getString("drop_regexp_afterXpath").r
+    
+    private val saveUrl = cassandraSession.prepare("insert into crawler.url(url,html) values(?,?)")
+    
+    private val htmlCleaner:HtmlCleaner = new HtmlCleaner()
     
     override def preStart(): Unit = {
-        urlCollector = actorRegistration.findStuff[UrlCollector].get
+    
     }
     
     def receive = {
-        case keyword:String => search(keyword)
+        case word:String => search(word)
         case _ =>
     }
     
-    def search(keyword:String):Unit = {
+    def search(word:String):Unit = {
         
-        val url = url_pattern.replace("{{KEYWORD}}","keyword")
+        val url = url_pattern.replace("{{KEYWORD}}",URLEncoder.encode(word,"utf8"))
         
+        //download the word
+        //fetch and uniq urls in raw html
+        //parse the url
         networkUtil.download(url).onComplete({
             case Success(html) => {
-                new HtmlCleaner().clean(html).evaluateXPath(url_Xpath)
+                println(html)
+                htmlCleaner.clean(html).evaluateXPath(url_Xpath)
                     .map(_.asInstanceOf[String])
-                    .filter( url => match_regexp_afterXpath.findFirstIn(url).isDefined)
-                    .filterNot( url => drop_regexp_afterXpath.findFirstIn(url).isEmpty)
-                    .foreach(urlCollector !)
+                    .filter(match_regexp_afterXpath.findFirstIn(_).isDefined)
+                    .filterNot(drop_regexp_afterXpath.findFirstIn(_).isEmpty)
+                    .toSet[String]
+                    .foreach( link => {
+                        networkUtil.downloadAll(link).onComplete({
+                            case Success(resp) => {
+                                val location = resp.headers.filter(_.name().equals("Location")).head.value()
+                                resp.entity.toStrict(networkUtil.connectionTimeout seconds).map(_.data.utf8String).onComplete({
+                                    case Success(html) => {
+                                        cassandraSession.execute(saveUrl.bind(location,html))
+                                        println(link)
+                                        println(location)
+                                    }
+                                    case Failure(f) =>
+                                })
+                            }
+                            case Failure(f) =>
+                        })
+                    }
+                    )
             }
             case Failure(f) =>
         })
-        
     }
 }
+
 
 

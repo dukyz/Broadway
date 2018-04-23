@@ -7,14 +7,14 @@ import akka.http.scaladsl.settings.{ClientConnectionSettings, ConnectionPoolSett
 import akka.http.scaladsl.{ClientTransport, Http}
 import akka.stream.Materializer
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
 
 private[env] object NetworkUtil {
     import Config.baseConfig
     
     private val maxRetries = baseConfig.getInt("default.common.env.singletons.NetworkUtil.max-retries")
-    private val connectionTimeout = baseConfig.getInt("default.common.env.singletons.NetworkUtil.connection-timeout")
+    val connectionTimeout = baseConfig.getInt("default.common.env.singletons.NetworkUtil.connection-timeout")
     
     def checkProxy(proxyHost:String,proxyPort:Int,targetUri:String)(implicit actorSystem:ActorSystem) = {
         val httpsProxyTransport = ClientTransport.httpsProxy(InetSocketAddress.createUnresolved(proxyHost, proxyPort))
@@ -49,8 +49,25 @@ private[env] object NetworkUtil {
         Http().singleRequest(HttpRequest(uri = targetUri), settings = settings).flatMap( resp =>
             resp.entity.toStrict(connectionTimeout.seconds).map(s=>s.data.utf8String)
         )
-
-        //
+    }
+    
+    def downloadAll(targetUri:String,proxyHost:String=null,proxyPort:Int=8080)
+                (implicit actorSystem: ActorSystem,executeContent:ExecutionContext,materializer:Materializer) = {
+        
+        val settings = ConnectionPoolSettings(actorSystem)
+            .withMaxRetries(maxRetries)
+            .withConnectionSettings(
+                ClientConnectionSettings(actorSystem)
+                    .withConnectingTimeout(connectionTimeout.seconds)
+            )
+        
+        if (proxyHost != null){
+            settings.withTransport(
+                ClientTransport.httpsProxy(InetSocketAddress.createUnresolved(proxyHost, proxyPort))
+            )
+        }
+        
+        Http().singleRequest(HttpRequest(uri = targetUri), settings = settings)
     }
     
     

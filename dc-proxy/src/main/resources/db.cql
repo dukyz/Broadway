@@ -1,3 +1,6 @@
+CREATE KEYSPACE proxy WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1 };
+
+
 CREATE TABLE proxy.archive (
     partition_id int,
     order_id int,
