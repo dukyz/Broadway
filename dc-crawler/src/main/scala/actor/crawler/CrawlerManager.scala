@@ -15,7 +15,6 @@ class CrawlerManager extends Actor with ActorUtil{
     
     override def preStart = {
         wordDispatcher = generateSingletonActor[WordDispatcher]
-        
         actorRegistration.registerStuff("crawlerManager",context.self)
         .registerStuff("wordDispatcher",wordDispatcher)
     }
@@ -23,4 +22,5 @@ class CrawlerManager extends Actor with ActorUtil{
     override def receive: Receive = {
         case _ =>
     }
+    
 }

@@ -15,6 +15,5 @@ object Dependencies {
         "net.sourceforge.htmlcleaner" % "htmlcleaner" % "2.21",
         "org.neo4j.driver" % "neo4j-java-driver" % "1.5.2"
     
-    
     )
 }
