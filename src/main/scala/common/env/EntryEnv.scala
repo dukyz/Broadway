@@ -1,6 +1,6 @@
 package common.env
 
-trait PackageEnv extends RunningEnv{
+trait EntryEnv extends RunningEnv{
     
     private var _packageInited = false
     

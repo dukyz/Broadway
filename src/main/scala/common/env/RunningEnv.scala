@@ -18,8 +18,6 @@ trait RunningEnv extends ConfigEnv {
     implicit val cassandraSessionAsync = Cassandra.cassandraSessionAsync
     
     val actorRegistration = ActorRegistration
-    val networkUtil = NetworkUtil
-    
 
 
 }

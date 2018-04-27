@@ -1,12 +1,12 @@
 package common.env.singletons
 
 import akka.actor.ActorRef
-import common.tool.EasyFunc
+import common.tool.FuncUtil
 
 import scala.collection.mutable
 import scala.reflect.ClassTag
 
-private[env] object ActorRegistration extends EasyFunc {
+private[env] object ActorRegistration extends FuncUtil {
     
     private val registeredActors = mutable.HashMap[String,ActorRef]()
 

@@ -13,7 +13,7 @@ import scala.reflect.ClassTag
   * @todo This trait should be used with Actor only
   * @author dukyz
   */
-trait ActorUtil extends RunningEnv with EasyFunc with ActorLogging with AskSupport{
+trait ActorUtil extends RunningEnv with FuncUtil with ActorLogging with AskSupport{
     this:Actor =>
     
     /**
