@@ -1,7 +1,7 @@
 package actor.crawler
 
 import akka.actor.{Actor, ActorRef}
-import common.tool.ActorUtil
+import common.tool.{ActorUtil, DownloadUtil}
 
 /**
   * @todo to manage actors organized by crawler module
@@ -9,13 +9,13 @@ import common.tool.ActorUtil
   * @author dukyz
   */
 
-class CrawlerManager extends Actor with ActorUtil{
+class CrawlerManager extends Actor with ActorUtil with DownloadUtil{
     
     var wordDispatcher:ActorRef = null
     
     override def preStart = {
         wordDispatcher = generateSingletonActor[WordDispatcher]
-        actorRegistration.registerStuff("crawlerManager",context.self)
+        registerStuff("crawlerManager",context.self)
         .registerStuff("wordDispatcher",wordDispatcher)
     }
     

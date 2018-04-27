@@ -65,4 +65,5 @@ trait FuncUtil  {
     def nvl[T](list:T*):T = {
         list.find(x => x != null).get
     }
+    
 }

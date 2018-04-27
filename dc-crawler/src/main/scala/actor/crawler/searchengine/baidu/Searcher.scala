@@ -1,12 +1,10 @@
 package actor.crawler.searchengine.baidu
 
 import java.net.URLEncoder
-import java.nio.charset.Charset
 
 import akka.actor.Actor
-import common.tool.ActorUtil
-import io.netty.util.CharsetUtil
-import org.htmlcleaner.{CleanerProperties, HtmlCleaner, SimpleHtmlSerializer}
+import common.tool.{ActorUtil, DownloadUtil}
+import org.htmlcleaner.{CleanerProperties, SimpleHtmlSerializer}
 
 import scala.util.{Failure, Success}
 
@@ -16,7 +14,7 @@ import scala.util.{Failure, Success}
   * @author dukyz
   */
 
-class Searcher extends Actor with ActorUtil{
+class Searcher extends Actor with ActorUtil with DownloadUtil{
     
     // search engine pattern url
     private val searchEnginePatternUrl = classConfig.getString("searchEnginePatternUrl")
@@ -46,41 +44,27 @@ class Searcher extends Actor with ActorUtil{
         
         //download the word
         //fetch and uniq urls in raw html
-        //parse the url
-//        networkUtil.download(url,searchEngineCharset).onComplete({
-//            case Success(html) => {
-//                println(html)
-//                htmlCleaner.clean(html).evaluateXPath(url_Xpath)
-//                    .map(_.asInstanceOf[String])
-//                    .filter(match_regexp_afterXpath.findFirstIn(_).isDefined)
-//                    .filterNot(drop_regexp_afterXpath.findFirstIn(_).isEmpty)
-//                    .toSet[String]
-//                    .foreach( link => {
-//                        networkUtil.getHeaders(link).onComplete({
-//                            case Success(headers) => {
-//                                val redirectLocation = headers.filter(_.name().equals("Location")).head.value()
-//                                networkUtil.download(redirectLocation).onComplete({
-//                                    case Success(html) => {
-//
-//                                        val cp = new CleanerProperties()
-//                                        val cleaned = new SimpleHtmlSerializer(cp)
-//                                            .getAsString(htmlCleaner.clean(html))
-//                                        val newCleaned = new String(cleaned.getBytes(),"")
-//
-//
-////                                        cassandraSession.execute(saveUrl.bind(redirectLocation,cleaned))
-//                                            println(newCleaned)
-//
-//                                    }
-//                                    case Failure(f) =>
-//                                })
-//                            }
-//                            case Failure(f) =>
-//                        })
-//                    })
-//            }
-//            case Failure(f) =>
-//        })
+        //parse the url into standard form and utf-8 charset
+        downloadHtmlString(url,searchEngineCharset).onComplete({
+            case Success(html) => {
+                htmlCleaner.clean(html).evaluateXPath(link_Xpath)
+                    .map(_.asInstanceOf[String])
+                    .filter(match_regexp_afterXpath.findFirstIn(_).isDefined)
+                    .filterNot(drop_regexp_afterXpath.findFirstIn(_).isEmpty)
+                    .toSet[String]
+                    .foreach( link => {
+                        downloadWithRelocate(link).onComplete({
+                            case Success(data) => {
+                                val urlTarget = data._1.split("#").head
+                                val cleanedHtml = rectifyHtml(data._2)
+                                cassandraSession.execute(saveUrl.bind(urlTarget,cleanedHtml))
+                            }
+                            case Failure(f) =>
+                        })
+                    })
+            }
+            case Failure(f) =>
+        })
     }
 }
 
