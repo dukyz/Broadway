@@ -5,4 +5,5 @@ private[env] object AkkaSystem {
     import akka.actor.ActorSystem
     
     val actorSystem = ActorSystem(baseConfig.getString("akka.cluster.name"), baseConfig)
+    val defaultDispatcher = actorSystem.dispatcher
 }

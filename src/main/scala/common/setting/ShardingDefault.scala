@@ -1,7 +1,7 @@
 package common.setting
 
 import akka.cluster.sharding.ShardRegion
-import common.tool.{FuncUtil, Empty}
+import common.tool.FuncUtil
 
 object ShardingDefault {
     
@@ -10,7 +10,7 @@ object ShardingDefault {
     
 }
 
-class ShardingDefault (numberOfShards:Int=1) extends Empty with FuncUtil  {
+class ShardingDefault (numberOfShards:Int=1) extends FuncUtil  {
     import ShardingDefault._
     
     val extractEntityId:ShardRegion.ExtractEntityId = {

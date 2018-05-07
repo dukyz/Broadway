@@ -18,7 +18,7 @@ import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 
 trait DownloadUtil extends RunningEnv{
-    
+    private val http = Http()
     private val maxRetries = baseConfig.getInt("default.common.tool.NetworkUtil.max-retries")
     private val connectionTimeout = baseConfig.getInt("default.common.tool.NetworkUtil.connection-timeout")
     private val depthDefault =  baseConfig.getInt("default.common.tool.NetworkUtil.search-depth-when-301")

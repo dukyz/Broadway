@@ -22,7 +22,7 @@ object WordDispatcher {
     case class Word(name:String)
 }
 
-class WordDispatcher extends Actor with ActorUtil{
+class WordDispatcher extends Actor with ActorUtil {
     import WordDispatcher._
     
     //the search engines
@@ -44,16 +44,15 @@ class WordDispatcher extends Actor with ActorUtil{
                     )
             }.toMap[String,ActorRef]
 
-        self ! Word("完美陌生人")
-    
     }
-    
     
     override def receive: Receive = {
         
         case Word(name) => saveAndSearch(name)
         case _ =>
+    
     }
+    
     
     def saveAndSearch(word: String) = {
         
@@ -63,4 +62,3 @@ class WordDispatcher extends Actor with ActorUtil{
     }
     
 }
-

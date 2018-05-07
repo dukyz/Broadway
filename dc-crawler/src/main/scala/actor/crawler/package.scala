@@ -10,6 +10,7 @@ import common.env.EntryEnv
   * @author dukyz
   */
 package object crawler extends EntryEnv{
+    
     def init = {
         actorSystem.actorOf(Props[CrawlerManager],"crawlerManager")
     }

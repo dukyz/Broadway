@@ -10,7 +10,7 @@ import scala.reflect.ClassTag
   * This trait provides some funtion for your convenience
   * @author dukyz
   */
-trait FuncUtil  {
+trait FuncUtil{
     
     /**
       * generate a simple name(lower camel case) for variant from Class name(Upper camel case).

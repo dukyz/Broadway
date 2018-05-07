@@ -1,7 +1,7 @@
 package actor.crawler
 
 import akka.actor.{Actor, ActorRef}
-import common.tool.{ActorUtil, DownloadUtil}
+import common.tool.ActorUtil
 
 /**
   * @todo to manage actors organized by crawler module
@@ -9,7 +9,7 @@ import common.tool.{ActorUtil, DownloadUtil}
   * @author dukyz
   */
 
-class CrawlerManager extends Actor with ActorUtil with DownloadUtil{
+class CrawlerManager extends Actor with ActorUtil{
     
     var wordDispatcher:ActorRef = null
     
@@ -17,10 +17,15 @@ class CrawlerManager extends Actor with ActorUtil with DownloadUtil{
         wordDispatcher = generateSingletonActor[WordDispatcher]
         registerStuff("crawlerManager",context.self)
         .registerStuff("wordDispatcher",wordDispatcher)
+    
+    
+        wordDispatcher ! WordDispatcher.Word("Akka")
     }
     
     override def receive: Receive = {
         case _ =>
     }
+    
+    
     
 }

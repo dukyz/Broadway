@@ -4,7 +4,6 @@ import java.net.URLEncoder
 
 import akka.actor.Actor
 import common.tool.{ActorUtil, DownloadUtil}
-import org.htmlcleaner.{CleanerProperties, SimpleHtmlSerializer}
 
 import scala.util.{Failure, Success}
 
