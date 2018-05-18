@@ -19,9 +19,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait DownloadUtil extends RunningEnv{
     private val http = Http()
-    private val maxRetries = baseConfig.getInt("default.common.tool.NetworkUtil.max-retries")
-    private val connectionTimeout = baseConfig.getInt("default.common.tool.NetworkUtil.connection-timeout")
-    private val depthDefault =  baseConfig.getInt("default.common.tool.NetworkUtil.search-depth-when-301")
+    private val maxRetries = baseConfig.getInt("default.common.tool.DownloadUtil.max-retries")
+    private val connectionTimeout = baseConfig.getInt("default.common.tool.DownloadUtil.connection-timeout")
+    private val depthDefault =  baseConfig.getInt("default.common.tool.DownloadUtil.search-depth-when-301")
     val htmlCleaner = new HtmlCleaner()
     htmlCleaner.getProperties().setOmitXmlDeclaration(true)
     val htmlTagNodeSerializer = new CompactHtmlSerializer(htmlCleaner.getProperties())

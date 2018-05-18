@@ -1,5 +1,6 @@
 package actor.crawler
 
+import akka.Done
 import akka.actor.{Actor, ActorRef, Props}
 import com.datastax.driver.core.PreparedStatement
 import common.setting.ShardingDefault.EntityEnvelope
@@ -48,7 +49,11 @@ class WordDispatcher extends Actor with ActorUtil {
     
     override def receive: Receive = {
         
-        case Word(name) => saveAndSearch(name)
+        case Word(name) => {
+            saveAndSearch(name)
+            sender ! Done
+        }
+        
         case _ =>
     
     }

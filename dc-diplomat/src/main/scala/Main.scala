@@ -1,4 +1,4 @@
-import actor.diplomat
+import actor.{crawler, diplomat}
 
 
 /**
@@ -7,5 +7,6 @@ import actor.diplomat
   * @author dukyz
   */
 object Main extends App {
+    crawler.run
     diplomat.run
 }

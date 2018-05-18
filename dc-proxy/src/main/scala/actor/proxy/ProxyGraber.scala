@@ -68,7 +68,7 @@ class ProxyGraber extends Timers with PersistentActor with ActorUtil  {
                 //persist order_id and handle subsequence after persistence
                 persist(event = this.order_id)( persisted_order_id => {
                     //send proxy extracted to the saver actor
-                    actorRegistration.findStuff[ProxySaver].get !
+                    findStuff[ProxySaver].get !
                         ShardingDefault.EntityEnvelope(persisted_order_id.toString,ProxySaver.saveNewIntoArchive(persisted_order_id,proxy))
                     //clean the persisted history when reach the snapshotInterval.
                     if (persisted_order_id % snapshotInterval == 0) {

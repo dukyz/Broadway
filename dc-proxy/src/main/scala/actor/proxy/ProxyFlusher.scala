@@ -58,7 +58,7 @@ class ProxyFlusher extends Timers with PersistentActor with ActorUtil  {
                     .foreach(
                         row => {
                             val ts = System.currentTimeMillis()
-                            actorRegistration.findStuff[ProxyChecker].get !
+                            findStuff[ProxyChecker].get !
                                 ShardingDefault.EntityEnvelope(
                                     ts.toString,ProxyChecker.Check(ts,row.getInt("order_id"),row.getString("proxy"))
                                 )
@@ -68,7 +68,7 @@ class ProxyFlusher extends Timers with PersistentActor with ActorUtil  {
                 deleteMessages(toSequenceNr = lastSequenceNr - 1)
                 
                 //if pid reach the max partition_id ,then reset flushPartition_id to -1,to start flush next turn
-                (actorRegistration.findStuff[ProxyGraber].get ? ProxyGraber.FindMaxOrder)
+                (findStuff[ProxyGraber].get ? ProxyGraber.FindMaxOrder)
                     .mapTo[Int].foreach(
                         oid => {
                             if (oid/ProxySaver.archivePartitionNum <= pid){

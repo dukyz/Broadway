@@ -3,7 +3,7 @@ package common.env
 import akka.actor.ActorRef
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
-import common.env.singletons.{ActorRegistration, AkkaSystem, Cassandra, HttpServer}
+import common.env.singletons.{ActorRegistration, AkkaSystem, Cassandra}
 
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
@@ -15,9 +15,6 @@ trait RunningEnv extends ConfigEnv {
     implicit val actorSystem = AkkaSystem.actorSystem
     implicit val executionContext = AkkaSystem.defaultDispatcher
     implicit val materializer = ActorMaterializer()
-    
-    
-    var httpServer = HttpServer.httpServer
     
     val cassandraSession = Cassandra.cassandraSession
     val cassandraSessionAsync = Cassandra.cassandraSessionAsync

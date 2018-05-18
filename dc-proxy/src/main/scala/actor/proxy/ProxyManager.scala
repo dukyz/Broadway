@@ -23,12 +23,12 @@ class ProxyManager extends Actor with ActorUtil{
         proxyChecker = generateShardingActor[ProxyChecker](classConfig.getInt("proxyCheckerCount"))
         proxySaver = generateShardingActor[ProxySaver](classConfig.getInt("proxySaverCount"))
     
-        actorRegistration.registerStuff("proxyManager",context.self)
-        actorRegistration.registerStuff("proxyFlusher",proxyFlusher)
-        actorRegistration.registerStuff("proxyGraber",proxyGraber)
-        actorRegistration.registerStuff("proxySeller",proxySeller)
-        actorRegistration.registerStuff("proxyChecker",proxyChecker)
-        actorRegistration.registerStuff("proxySaver",proxySaver)
+        registerStuff("proxyManager",context.self)
+        .registerStuff("proxyFlusher",proxyFlusher)
+        .registerStuff("proxyGraber",proxyGraber)
+        .registerStuff("proxySeller",proxySeller)
+        .registerStuff("proxyChecker",proxyChecker)
+        .registerStuff("proxySaver",proxySaver)
     }
     
     override def receive: Receive = {
